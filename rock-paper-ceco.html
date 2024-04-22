@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+    
+<head>
+    <style>
+@media only screen and (max-width: 674px) and (min-width: 100px) {
+    body, html {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  
+}
+
+body, html {
+  height: 100%; 
+  margin: 0; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main {
+  width: 100%; 
+   
+}
+
+        .LOg{
+            height: 50px 
+        }
+
+        body {
+            background-color: black;
+        }
+
+        h1 {
+            font-size: 50px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .b2,
+        .b3,
+        .b1 {
+            cursor: pointer;
+            border: 2px;
+            border-style: solid;
+            border-color: white;
+            border-radius: 96px;
+            width: 190px;
+            height: 190px;
+            background-color: transparent;
+        }
+
+        .pare {
+            color: white;
+            border: none;
+            font-size: 29px;
+            padding: 8px 15px;
+            cursor: pointer;
+        }
+
+        .b4 {
+            background-color: white;
+            border: none;
+            font-size: 29px;
+            padding: 8px 15px;
+            cursor: pointer;
+        }
+
+        .ak4 {
+            display: inline;
+            height: 90px;
+        }
+
+        
+        
+    </style>
+</head>
+
+<body>
+
+    
+      <div class="main">
+        <div>
+    <h1>Камък ножица хартия</h1>
+
+    <button onclick="MYturn('rock');" class="b1">
+    <img src="rock-emoji.png" class="LOg">
+    </button>
+    <button onclick="MYturn('paper');" class="b2">
+    <img src="paper-emoji.png" alt="" class="LOg">
+    </button>
+    <button onclick="MYturn('scissors');" class="b3">
+    <img src="scissors-emoji.png" alt="" class="LOg">
+    </button>
+    <p class="pare3">Вие печелите</p>
+
+
+    <p class="pare2">
+        Вие
+        <img src="rock-emoji.png" class="ak4"> Компютър
+        <img src="paper-emoji.png" class="ak4">
+
+    </p>
+
+    <p class="pare" id="resultText">
+        Резултат:  Победи: 0, Загуби: 0, Равенства: 0
+    </p>
+    <button onclick="resetScore();" class="b4">Рестарт</button>
+    <button onclick="autoPlay()" class="b4">Автопилот</button>
+</div>
+</div>  
+    <script>
+        let score;
+
+        function initScore() {
+            try {
+              
+                const storedScore = localStorage.getItem('score');
+
+                
+                score = JSON.parse(storedScore);
+
+                if (!score || typeof score !== 'object') {
+                    throw new Error('Invalid score format');
+                }
+            } catch (error) {
+                console.error('Error initializing score. Resetting to default.', error);
+                score = {
+                    wins: 0,
+                    loses: 0,
+                    draws: 0,
+                };
+                saveScore(); 
+            }
+        }
+
+        function saveScore() {
+           
+            localStorage.setItem('score', JSON.stringify(score));
+        }
+
+        function compMO() {
+            const randomMove = Math.floor(Math.random() * 3);
+
+            if (randomMove === 0) {
+                return 'rock';
+            } else if (randomMove === 1) {
+                return 'paper';
+            } else {
+                return 'scissors';
+            }
+        }
+
+        function MYturn(par) {
+            initScore(); 
+
+            let computerMove = compMO();
+            let result;
+
+            if (par === 'rock') {
+                if (computerMove === 'rock') {
+                    result = 'равен';
+                } else if (computerMove === 'paper') {
+                    result = 'загуба';
+                } else if (computerMove === 'scissors') {
+                    result = 'победа';
+                }
+            } else if (par === 'paper') {
+                if (computerMove === 'rock') {
+                    result = 'победа';
+                } else if (computerMove === 'paper') {
+                    result = 'равен';
+                } else if (computerMove === 'scissors') {
+                    result = 'загуба';
+                }
+            } else if (par === 'scissors') {
+                if (computerMove === 'rock') {
+                    result = 'загуба';
+                } else if (computerMove === 'paper') {
+                    result = `победа`;
+                } else if (computerMove === 'scissors') {
+                    result = 'равен';
+                }
+            }
+
+            if (result === 'победа') {
+                score.wins++;
+            } else if (result === 'равен') {
+                score.draws++;
+            } else if (result === 'загуба') {
+                score.loses++;
+            }
+
+            saveScore(); 
+
+           
+            document.getElementById('resultText').innerHTML = `
+            Резултат: ${result} Победи: ${score.wins}, Загуби: ${score.loses}, Равенства: ${score.draws}`;
+            
+            document.querySelector('.pare2').innerHTML = `Вие <img src="${par}-emoji.png" class="ak4"> компютъра <img src="${computerMove}-emoji.png" class="ak4">`;
+
+            document.querySelector('.pare3').innerHTML = `Вие ${result}`;
+        }
+
+        function resetScore() {
+            score = {
+                wins: 0,
+                loses: 0,
+                draws: 0,
+            };
+
+            saveScore(); 
+        }
+
+        let x = false;
+        let id;
+
+        function autoPlay(){
+            
+            if(x===false){
+            let par = compMO();
+            id = setInterval(function(){
+                MYturn(compMO());
+
+
+            }, 1000);
+            
+            x=true;
+        }else if(x===true){
+            clearInterval(id);
+            x=false;
+        }
+        }
+    </script>
+
+</body>
+
+</html>
